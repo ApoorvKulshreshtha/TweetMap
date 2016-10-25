@@ -1,0 +1,13 @@
+branch-defaults:
+  default:
+    environment: fullyfinal
+    group_suffix: null
+global:
+  application_name: fullyfinal
+  branch: null
+  default_ec2_keyname: null
+  default_platform: python
+  default_region: us-west-2
+  profile: null
+  repository: null
+  sc: null
