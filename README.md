@@ -13,4 +13,4 @@ Requirements:
 3. Flask
 4. AWS ElasticBeanStalk
 
-
+EBS URL: http://fullyfinal.ygnjgaw43p.us-west-2.elasticbeanstalk.com/
