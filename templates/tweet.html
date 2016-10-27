@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="stylesheet" href="/static/stl.css">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Marker Clustering</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="main-content">
+        <form action="/keysearch" class="stl1" method="post">
+          <input class="search-bar" type="text" name="search"/>
+          <input type="submit" value="Search" class="search-button"></input>
+        </form>
+
+    </div>
+
+    <div id="map"></div>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js">
+</script>
+    <script>
+        var $ROOT = {{ request.script_root|tojson|safe }};
+
+        var starter = function(){setInterval(function() {
+              $.getJSON($ROOT + '/rt', {}, function(data) {
+                result = data;
+                definingVars(data);
+                initMap();
+              });
+              return false;
+            },11000)};
+
+        starter();
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 2,
+          center: {lat: 48.5602, lng: -119.5752}
+        });
+
+        // Create an array of alphabetical characters used to label the markers.
+        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+       var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length],
+            title: text[i]
+          });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+      }
+
+   var locations=[], i, text=[];
+
+  {% for entry in result['hits']['hits'] %}
+  var longitude={{entry['_source']['coordinates'][0]}};
+  var latitude={{entry['_source']['coordinates'][1]}};
+  var tweetText="{{entry['_source']['text'].replace('\n', '')}}";
+  locations.push({lat:latitude,lng:longitude});
+  text.push(tweetText);
+  {% endfor %}
+      var definingVars = function(result) {
+      locations = [];
+      text = [];
+      var size = result['hits']['hits'].length, entry, longitude, latitude;
+
+      for (var i = 0;i<size; i++){
+        entry = result['hits']['hits'][i];
+        longitude = entry['_source']['coordinates'][0];
+        latitude = entry['_source']['coordinates'][1];
+        tweetText = entry['_source']['text'].replace('\n', '');
+        locations.push({lat:latitude,lng:longitude});
+        text.push(tweetText);
+      }
+    }
+
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2cUJcxExFX3fH4GjknvNVYW-BoaNJ_pY&callback=initMap">
+    </script>
+  </body>
+</html>
