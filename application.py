@@ -9,7 +9,7 @@ chab = ""
 def home():
     es = Elasticsearch([{'host':'search-tweet-c3mkhiza33cstn5qrvotrsw7my.us-west-2.es.amazonaws.com', 'port':443,'use_ssl':True}])
     result = es.search(size=5000,index='twitter')
-    return render_template('final_template.html', result=parseRes(result))
+    return render_template('tweet.html', result=parseRes(result))
 
 @application.route('/keysearch', methods = ['GET','POST'])
 def keysearch():
@@ -17,7 +17,7 @@ def keysearch():
     es = Elasticsearch([{'host':'search-tweet-c3mkhiza33cstn5qrvotrsw7my.us-west-2.es.amazonaws.com', 'port':443,'use_ssl':True}])
     updateKeywords(str(keywords))
     result = tweetmatch(es, str(keywords))
-    return render_template('final_template.html', result=parseRes(result))
+    return render_template('tweet.html', result=parseRes(result))
 
 def tweetmatch(es, keyword):
     if len(keyword) is not 0:
