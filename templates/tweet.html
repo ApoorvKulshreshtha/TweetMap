@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <link rel="stylesheet" href="/static/stl.css">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Marker Clustering</title>
@@ -18,37 +17,42 @@
         padding: 0;
       }
     </style>
+	<link rel="stylesheet" href="/static/stl.css">
   </head>
   <body>
-  <div class="main-content">
-        <form action="/ks" class="stl1" method="post">
-          <input class="search-bar" type="text" name="search"/>
-          <input type="submit" value="Search" class="search-button"></input>
+  <div class="main-container">
+  	<div class="inner-container">
+    	<form action="/ks" method="post" class="stl1">
+        	<input type="text" name="keyword" class="add-keyword-field"/>
+          	<input type="submit" value="Search Keywords" class="add-keyword-button"></input>
         </form>
-
-    </div>
-
+	</div>
+  </div>
     <div id="map"></div>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js">
 </script>
     <script>
-        var $ROOT = {{ request.script_root|tojson|safe }};
+        var locations=[], i, text=[], 
+			$ROOT = {{ request.script_root|tojson|safe }};
 
-        var starter = function(){setInterval(function() {
-              $.getJSON($ROOT + '/rtw', {}, function(data) {
-                result = data;
-                definingVars(data);
+        var poller = function() {
+			setInterval(function() {
+              $.getJSON($ROOT + '/rtw', {}, function(result) {
+                definingVars(result);
+				
+				//re-init map
                 initMap();
               });
-              return false;
+              return;
             },11000)};
 
-        starter();
+		//calling once at the beginning
+        poller();
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 2,
-          center: {lat: 48.5602, lng: -119.5752}
+          center: {lat: 40.7128, lng: 74.0059}
         });
 
         // Create an array of alphabetical characters used to label the markers.
@@ -68,27 +72,36 @@
 
       }
 
-   var locations=[], i, text=[];
+   
 
   {% for entry in result['hits']['hits'] %}
-  var longitude={{entry['_source']['coordinates'][0]}};
-  var latitude={{entry['_source']['coordinates'][1]}};
+  
   var tweetText="{{entry['_source']['text'].replace('\n', '')}}";
-  locations.push({lat:latitude,lng:longitude});
   text.push(tweetText);
+  
+  var latitude={{entry['_source']['coordinates'][1]}};
+  var longitude={{entry['_source']['coordinates'][0]}};
+  locations.push({lat:latitude,lng:longitude});
+  
   {% endfor %}
       var definingVars = function(result) {
-      locations = [];
       text = [];
-      var size = result['hits']['hits'].length, entry, longitude, latitude;
+	  locations = [];
+      
+      var size = result['hits']['hits'].length;
+	  var entry, longitude, latitude;
 
-      for (var i = 0;i<size; i++){
-        entry = result['hits']['hits'][i];
-        longitude = entry['_source']['coordinates'][0];
+      for (var index = 0;index<size; index++){
+	  	entry = result['hits']['hits'][index];
+		
+		tweetText = entry['_source']['text'].replace('\n', '');
+		text.push(tweetText);
+        
         latitude = entry['_source']['coordinates'][1];
-        tweetText = entry['_source']['text'].replace('\n', '');
+        longitude = entry['_source']['coordinates'][0];
+		
         locations.push({lat:latitude,lng:longitude});
-        text.push(tweetText);
+        
       }
     }
 

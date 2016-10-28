@@ -1,19 +1,21 @@
 .stl1{
-    margin:auto;
-    height:100px;
-    width:600px;
-    z-index:10;
+    width:650px;
+    height:150px;
+    z-index: 1000;
+    padding: 15px;
     position: fixed;
-    padding: 10px;
+    margin:auto;
 }
 
-.search-bar{
-    align:center;
-    height:30%;
-    width:30%
+.add-keyword-field{
+    float: right;
+    height: 20%;
+    width: 30%;
 }
 
-.search-button{
+.add-keyword-button{
+    float: right;
+    text-align: center;
+    height:25%;
     align:center;
-    height:30%;
 }
