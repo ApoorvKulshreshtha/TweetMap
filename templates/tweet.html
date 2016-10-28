@@ -21,7 +21,7 @@
   </head>
   <body>
   <div class="main-content">
-        <form action="/keysearch" class="stl1" method="post">
+        <form action="/ks" class="stl1" method="post">
           <input class="search-bar" type="text" name="search"/>
           <input type="submit" value="Search" class="search-button"></input>
         </form>
@@ -35,7 +35,7 @@
         var $ROOT = {{ request.script_root|tojson|safe }};
 
         var starter = function(){setInterval(function() {
-              $.getJSON($ROOT + '/rt', {}, function(data) {
+              $.getJSON($ROOT + '/rtw', {}, function(data) {
                 result = data;
                 definingVars(data);
                 initMap();
