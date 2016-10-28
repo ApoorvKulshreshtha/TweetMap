@@ -33,7 +33,7 @@ class StreamListener(StreamListener):
 			StreamedTweet['user-name'] = StreamedData['user-name']
 			StreamedTweet['hashtag'] = [hashtags['text'] for hashtags in StreamedData['entities']['hashtags']]
 			if(StreamedData['coordinates']):
-				es.index(index = 'twitter_feed', doc_type = 'tweets', id = StreamedTweet['id'], body = StreamedTweet)
+				es.index(index = 'twitter_feed', doc_type = 'tweets', id = StreamedTweet['id'],ttl="5m", body = StreamedTweet)
 		except Exception as e:
 			pass
 		time.sleep(0.1)

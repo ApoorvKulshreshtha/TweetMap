@@ -43,5 +43,5 @@ while True:
                 tweeter['retweet-count'] = singleTweet.retweet_count
                 tweeter['favorite-count'] = singleTweet.favorite_count
                 #print (data.text)
-                es.index(index = 'twitter', doc_type = 'tweets', id = singleTweet.id, body = tweeter)
+                es.index(index = 'twitter', doc_type = 'tweets', id = singleTweet.id,ttl="5m", body = tweeter)
                 print("found a geolocated tweet at ", tweeter['coordinates'])
